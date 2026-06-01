@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>볼메이트 (VolleyMate) - 실력별 맞춤 배구 매칭</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" onclick="switchTab('home')">🏐 볼메이트 <span>VolleyMate</span></a>
+            <div class="nav-menu">
+                <button class="nav-link active" id="tab-home" onclick="switchTab('home')">매칭 홈</button>
+                <button class="nav-link" id="tab-mypage" onclick="switchTab('mypage')">마이페이지</button>
+                <button class="btn-primary" id="btn-open-modal">➕ 우리 팀 등록</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-container tab-content active" id="content-home">
+        <section class="hero-section">
+            <h1>내 실력에 딱 맞는 지역 배구 라이벌 매칭</h1>
+            <p>연차(구력)와 자체 숙련도 검증 시스템을 통해 정확하고 신뢰할 수 있는 교류전 상대를 찾아보세요.</p>
+        </section>
+
+        <section class="filter-card">
+            <h2 class="section-title">🔍 맞춤 상대 필터 검색</h2>
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label for="filter-location">지역 선택</label>
+                    <select id="filter-location">
+                        <option value="">모든 지역</option>
+                        <option value="경상북도 구미시">경북 구미시</option>
+                        <option value="서울특별시 강남구">서울 강남구</option>
+                        <option value="경기도 수원시">경기 수원시</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-level">숙련도 등급</label>
+                    <select id="filter-level">
+                        <option value="">모든 숙련도</option>
+                        <option value="초급">초급 (Level 1)</option>
+                        <option value="중급">중급 (Level 2)</option>
+                        <option value="상급">상급 (Level 3)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-experience">팀 구력</label>
+                    <select id="filter-experience">
+                        <option value="">모든 구력</option>
+                        <option value="1년 미만">1년 미만</option>
+                        <option value="1~3년">1~3년</option>
+                        <option value="3~5년">3~5년</option>
+                        <option value="5년 이상">5년 이상</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn-secondary" id="btn-reset-filter">🔄 필터 초기화</button>
+                <button class="btn-search" id="btn-apply-filter">적용하기</button>
+            </div>
+        </section>
+
+        <section class="list-section">
+            <div class="list-header">
+                <h2>매칭 대기 중인 동호회 리스트</h2>
+                <span class="count-badge" id="team-count">총 0개 팀</span>
+            </div>
+            <div class="team-grid" id="team-grid-container"></div>
+        </section>
+    </main>
+
+    <main class="main-container tab-content" id="content-mypage">
+        <section class="mypage-layout">
+            <div class="mypage-sidebar">
+                <div class="profile-summary-card">
+                    <div class="my-team-badge">MY TEAM</div>
+                    <h2 id="my-team-name-display">등록된 팀 없음</h2>
+                    <p id="my-team-loc-display">팀을 먼저 등록해 주세요.</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-label">🔥 매칭 시도</span>
+                        <span class="stat-value" id="stat-attempts">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">🤝 연결 성공</span>
+                        <span class="stat-value" id="stat-success">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mypage-content">
+                <div class="dashboard-card">
+                    <h3>📞 매칭 연결 및 연락처 목록</h3>
+                    <p class="card-subtext">매칭을 신청했거나 수락하여 매칭이 성사된 팀의 연락처입니다.</p>
+                    <div class="contact-list" id="contact-list-container">
+                        </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>✉ 실시간 메시지 수신함</h3>
+                    <p class="card-subtext">다른 동호회에서 우리 팀에 직접 보낸 쪽지 및 조율 메세지입니다.</p>
+                    <div class="message-list" id="message-list-container">
+                        </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="message-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>✉ <span id="msg-target-team">상대팀</span>에게 메시지 보내기</h3>
+                <button class="btn-close-modal" id="btn-close-msg-modal">&times;</button>
+            </div>
+            <form id="message-send-form">
+                <div class="form-group" style="padding: 24px 24px 0 24px;">
+                    <label for="msg-content">메시지 내용</label>
+                    <textarea id="msg-content" rows="4" placeholder="교류전 제안 사유, 구체적인 날짜, 시간대 체육관 유무 등을 적어 직접 조율해 보세요." required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="btn-cancel-msg-modal">취소</button>
+                    <button type="submit" class="btn-search">보내기 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="team-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🏐 신규 배구 동호회 등록</h3>
+                <button class="btn-close-modal" id="btn-close-modal">&times;</button>
+            </div>
+            <form id="team-register-form">
+                <div class="form-group">
+                    <label for="form-name">동호회 이름 <span class="required">*</span></label>
+                    <input type="text" id="form-name" placeholder="예: 구미 스파이크 브라더스" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-location">활동 지역 <span class="required">*</span></label>
+                        <select id="form-location" required>
+                            <option value="">선택하세요</option>
+                            <option value="경상북도 구미시">경북 구미시</option>
+                            <option value="서울특별시 강남구">서울 강남구</option>
+                            <option value="경기도 수원시">경기 수원시</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-experience">팀 구력 (연차) <span class="required">*</span></label>
+                        <select id="form-experience" required>
+                            <option value="">선택하세요</option>
+                            <option value="1년 미만">1년 미만</option>
+                            <option value="1~3년">1~3년</option>
+                            <option value="3~5년">3~5년</option>
+                            <option value="5년 이상">5년 이상</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-level">숙련도 등급 <span class="required">*</span></label>
+                        <select id="form-level" required>
+                            <option value="">선택하세요</option>
+                            <option value="초급">초급 (Level 1)</option>
+                            <option value="중급">중급 (Level 2)</option>
+                            <option value="상급">상급 (Level 3)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-position">선호 포지션 피스</label>
+                        <select id="form-position">
+                            <option value="올라운더">올라운더</option>
+                            <option value="세터 중심">세터 중심</option>
+                            <option value="공격수 다수">공격수 다수</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-info">팀 소개글 <span class="required">*</span></label>
+                    <textarea id="form-info" rows="3" placeholder="팀 스타일을 적어주세요." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-contact">대표자 연락처 <span class="required">*</span></label>
+                    <input type="text" id="form-contact" placeholder="전화번호 혹은 오픈카톡 주소" required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="btn-cancel-modal">취소</button>
+                    <button type="submit" class="btn-search">등록 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
